@@ -1,17 +1,13 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "MainSettingsDialog"
+  name: "MainSettingsDialog",
 })
 </script>
 
 <template>
- <div>
-   settings
- </div>
+  <div>
+    settings
+  </div>
 </template>
-
-<style scoped>
-
-</style>

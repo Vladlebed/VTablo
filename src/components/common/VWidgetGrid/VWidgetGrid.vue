@@ -26,17 +26,18 @@
 import { defineComponent } from 'vue'
 import type { IWidgetConfig } from '@/components/widget/config'
 import TheWidget from '@/components/widget/TheWidget.vue'
-import {GridLayout} from "grid-layout-plus";
-import {widgetComponentFactory} from "@/components/widget/config";
+import { GridLayout } from "grid-layout-plus";
+import { widgetComponentFactory } from "@/components/widget/config";
+import type { IFormattedGridWidget } from "@/components/common/VWidgetGrid/config";
 
 export default defineComponent({
   name: 'VWidgetGrid',
-  components: {GridLayout, TheWidget },
+  components: { GridLayout, TheWidget },
   emits: ['update:widgets'],
 
   props: {
     widgets: {
-      type: Array<IWidgetConfig<any, any>>,
+      type: Array<IWidgetConfig<any>>,
       default: () => [],
     },
 
@@ -62,34 +63,33 @@ export default defineComponent({
   },
 
   computed: {
-    computedWidgets() {
+    computedWidgets(): IFormattedGridWidget<any>[] {
       return this.formatWidgets(this.widgets)
     },
   },
 
   methods: {
-    formatWidgets(widgetList: Array<IWidgetConfig<any, any>>) {
+    formatWidgets(widgetList: IWidgetConfig<any>[]): IFormattedGridWidget<any>[] {
       return widgetList.map(widgetConfig => {
-        const widgetWrapper = widgetComponentFactory(widgetConfig.widget)
-        console.log('widgetWrapper', widgetWrapper)
+        const widgetWrapper = widgetComponentFactory(widgetConfig.type)
         return {
           i: widgetConfig.id,
           x: widgetConfig.position.x,
           y: widgetConfig.position.y,
           h: widgetConfig.size.h,
           w: widgetConfig.size.w,
-          minH: widgetWrapper.main.properties.size.minH,
-          minW: widgetWrapper.main.properties.size.minW,
-          maxW: widgetWrapper.main.properties.size.maxW,
-          maxH: widgetWrapper.main.properties.size.maxH,
-          static: widgetConfig.static,
+          minH: widgetWrapper.size.minH,
+          minW: widgetWrapper.size.minW,
+          maxW: widgetWrapper.size.maxW,
+          maxH: widgetWrapper.size.maxH,
+          static: false,
           widgetConfig,
-          widgetWrapper
+          widgetWrapper,
         }
       })
     },
 
-    removeWidget(widget) {
+    removeWidget(widget): void {
       const index = this.widgets.findIndex(({ id }) => id === widget.i)
       const widgets = [...this.widgets]
       widgets.splice(index, 1)
